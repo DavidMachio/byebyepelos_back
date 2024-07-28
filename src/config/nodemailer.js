@@ -15,7 +15,7 @@ const mailOptions = ({email, password, }) => {
   from: process.env.USER_MAILER,
   to: email,
   subject: 'Tu cuenta ha sido creada',
-  html: getHTML(email, password)
+  html: getHTML({email, password})
 }
 };
 
