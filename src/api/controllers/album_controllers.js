@@ -14,7 +14,12 @@ const createAlbum = async (req, res, next) => {
 
 const getAlbums = async (req, res, next) => {
     try {
-        const albums = await Album.find().populate('musicians');
+        const albums = await Album.find().populate('musicians').populate({
+            path: 'songs',
+            populate: {
+              path: 'musicians'
+            }
+          }).populate('mixed');
         return res.status(200).json(albums)
     } catch (error) {
         return res.status(400).json('Error al encontrar albums')

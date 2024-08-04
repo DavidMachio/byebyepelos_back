@@ -1,9 +1,10 @@
 const Musician = require('../models/musicians_model');
 
-const createMusician = async (req, res) => {
+const createMusician = async (req, res, next) => {
     try {
     const newMusician = new Musician(req.body);
-    const musicianDuplicated = await Musician.findOne({nombre: req.body.nombre})
+    const musicianDuplicated = await Musician.findOne({firstName: req.body.firstName})
+    console.log(musicianDuplicated);
     if(musicianDuplicated) return res.status(400).json('Ya existe un músico con este nombre')
     await newMusician.save();
     return res.status(201).json(newMusician);
@@ -14,7 +15,7 @@ const createMusician = async (req, res) => {
 
 const getMusicians = async (requ, res, next) => {
     try {
-        const musicians = await Musician.find()
+        const musicians = await Musician.find().populate('songs')
         return res.status(200).json(musicians)
     } catch (error) {
         return res.status('400').json('Error al buscar músicos')
@@ -23,7 +24,7 @@ const getMusicians = async (requ, res, next) => {
 
 const getMusician = async (req, res, next) => {
     try {
-        const musician = await Musician.find({nombre: {$regex: req.params.name, $options: "i"}})
+        const musician = await Musician.find({firstName: {$regex: req.params.name, $options: "i"}})
         return res.status(200).json(musician)
     } catch (error) {
         return res.status(400).json('No se ha encontrado este músico')
